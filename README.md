@@ -106,7 +106,13 @@ terraform apply
 (find master ip at hosts file or terraform output)
 ssh -i .aws/key_pairs/k8s.pem ubuntu@{MASTER_IP}
 kubectl get nodes
+# View and Expose your Helm chart
+# In this case we deploy a simple traefik helm chart
+kubectl get services
+kubectl port-forward $(kubectl get pods --selector "app.kubernetes.io/name=traefik" --output=name) 9000:9000 --address='0.0.0.0'
 
+# 5. Open your browser and view the traefik dashboard
+http://{MasterIP}:9000/dashboard/#
 ```
 Kubernetes Cluster on AWS How to:
 ---
@@ -117,8 +123,3 @@ Kubernetes Cluster on AWS How to:
 Helpful sources
 ---
 [k8s cluster with ansible](https://ugurakgul.medium.com/bootstrapping-a-kubernetes-cluster-with-ansible-2d1a1155fcb9)
-
-
-Upcoming features
----
-- deploy a simple helm chart in this cluster

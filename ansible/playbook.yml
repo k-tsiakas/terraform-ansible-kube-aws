@@ -37,3 +37,9 @@
   remote_user: ubuntu
   roles:
     - join-cluster
+
+- name: Run helm chart
+  hosts: Master
+  remote_user: ubuntu
+  roles:
+    - run_helm_chart

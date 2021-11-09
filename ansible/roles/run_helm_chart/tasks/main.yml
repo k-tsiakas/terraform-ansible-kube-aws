@@ -1,0 +1,15 @@
+---
+# tasks file for run_helm_chart
+
+- name: Add Traefik repo to Helm
+  become: yes
+  shell: helm repo add traefik https://helm.traefik.io/traefik
+
+- name: Update Helm chart repository
+  become: yes
+  shell: helm repo update
+
+- name: Install traefik Helm chart
+  become: yes
+  shell: export KUBECONFIG=/home/ubuntu/.kube/config && helm install traefik traefik/traefik
+

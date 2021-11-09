@@ -18,10 +18,10 @@ resource "aws_route_table" "my-route-table" {
     cidr_block = "0.0.0.0/0" 
     gateway_id = aws_internet_gateway.my-gateway.id
   }
-  # route {
-  #   ipv6_cidr_block = "::/0" 
-  #   gateway_id = aws_internet_gateway.my-gateway.id
-  # } 
+  route {
+    ipv6_cidr_block = "::/0" 
+    gateway_id = aws_internet_gateway.my-gateway.id
+  } 
   tags = {
     "Name" = "my-route-table"
   }
@@ -44,38 +44,7 @@ resource "aws_route_table_association" "my-route-association"{
   route_table_id = aws_route_table.my-route-table.id
 }
 
-# # Create Security Group for control plane
-# resource "aws_security_group" "cplb" {
-#   name        = "my-security-group"
-#   description = "Control Plane Load Balancer"
-#   vpc_id      = aws_vpc.my-vpc.id
-#   tags = {
-#     Name = "Control Plane Load Balancer"
-#   }
-#   ingress {
-#     description = "Kubernetes API"
-#     from_port   = 6443
-#     to_port     = 6443
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-#   ingress {
-#     description = "Secure Kubernetes API"
-#     from_port   = 443
-#     to_port     = 443
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#     pv6_cidr_blocks = ["::/0"]
-#   }
-#   egress {
-#     description = "Allow all outbound traffic"
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#     ipv6_cidr_blocks = ["::/0"]
-#   }
-# }
+
 
 # Create Security Group for VMs
 resource "aws_security_group" "master-security-group" {
@@ -144,6 +113,13 @@ resource "aws_security_group" "master-security-group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   
+  ingress {
+    description = "Traefik dashboard"
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 0
@@ -172,6 +148,8 @@ resource "aws_security_group" "worker-security-group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
+
 
   ingress {
     description = "SSH"
